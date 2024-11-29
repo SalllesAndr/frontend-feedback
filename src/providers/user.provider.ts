@@ -11,18 +11,25 @@ export interface IUser {
 
 export default class UserProvider {
     private baseUrl: string;
+    private apiKey: string;
 
     constructor() {
         this.baseUrl = "https://user.cloudt.com.br";
+        this.apiKey = "85681994-85d1-4587-ae66-fd82717445c7";
+    }
+
+    private getHeaders(): HeadersInit {
+        return {
+            "Content-Type": "application/json",
+            "X-APY-Key": this.apiKey,
+        };
     }
 
     async createUser(signUpSchema: SignUpSchema) {
         // Create teacher
         const response = await fetch(`${this.baseUrl}/createUser`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: this.getHeaders(),
             body: JSON.stringify({
                 email: signUpSchema.email,
                 username: signUpSchema.username,
@@ -36,9 +43,7 @@ export default class UserProvider {
         // Create student
         const response = await fetch(`${this.baseUrl}/signup`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: this.getHeaders(),
             body: JSON.stringify({
                 email: signUpSchema.email,
                 username: signUpSchema.username,
@@ -51,31 +56,41 @@ export default class UserProvider {
     async login(signInSchema: SignInSchema) {
         const response = await fetch(`${this.baseUrl}/login`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: this.getHeaders(),
             body: JSON.stringify(signInSchema),
         });
         return response.json();
     }
 
     async getUsers() {
-        const response = await fetch(`${this.baseUrl}/getUsers`);
+        const response = await fetch(`${this.baseUrl}/getUsers`, {
+            method: "GET",
+            headers: this.getHeaders(),
+        });
         return response.json();
     }
 
     async getUserById(id: string): Promise<IUser> {
-        const response = await fetch(`${this.baseUrl}/getUserByID/${id}`);
+        const response = await fetch(`${this.baseUrl}/getUserByID/${id}`, {
+            method: "GET",
+            headers: this.getHeaders(),
+        });
         return response.json();
     }
 
     async getStudents() {
-        const response = await fetch(`${this.baseUrl}/getStudents`);
+        const response = await fetch(`${this.baseUrl}/getStudents`, {
+            method: "GET",
+            headers: this.getHeaders(),
+        });
         return response.json();
     }
 
     async getTeachers() {
-        const response = await fetch(`${this.baseUrl}/getProfessors`);
+        const response = await fetch(`${this.baseUrl}/getProfessors`, {
+            method: "GET",
+            headers: this.getHeaders(),
+        });
         return response.json();
     }
 }
